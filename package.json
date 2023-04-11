@@ -1,14 +1,14 @@
 {
   "name": "calenderBlock",
   "version": "1.0.0",
-  "description": "",
+  "description": "calender backend",
   "main": "index.js",
   "scripts": {
     "server": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sachin Kesarwani",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
