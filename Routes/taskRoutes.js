@@ -24,7 +24,9 @@ taskRoutes.post("/add", taskmiddleware, async (req, res) => {
     data.durationM = data.durationM;
   }
 
-
+  if(data.durationH==0&&data.durationM==0){
+    data.durationM=30
+  }
   try {
     let postdata = new taskModel(data);
     await postdata.save();
