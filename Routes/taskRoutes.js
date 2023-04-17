@@ -58,6 +58,22 @@ taskRoutes.get("/data", taskmiddleware, async (req, res) => {
   }
 });
 
+taskRoutes.get("/getall",taskmiddleware,async(req,res)=>{
+  let { userid}=req.body
+
+  try {
+    const cryptr = new Cryptr(process.env.secretkey);
+    let alldata=await taskModel.find({userid:userid}).sort({year:-1,month:-1,date:-1})
+
+    for(let i=0;i<alldata.length;i++){
+      alldata[i].task=cryptr.decrypt(alldata[i].task)
+    }
+   
+    res.status(200).send({"msg":"Your all tasks",data:alldata})
+  } catch (error) {
+    res.status(400).send({"msg":"Something Went Wrong",data:[]})
+  }
+})
 
 taskRoutes.get("/search",taskmiddleware,async(req,res)=>{
     let {task,date,month,year}=req.query
