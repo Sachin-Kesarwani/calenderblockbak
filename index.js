@@ -15,6 +15,7 @@ app.get("/",(req,res)=>{
 
 app.use("/users",userRoute)
 app.use("/tasks",taskRoutes)
+app.use("/uploads",express.static("uploads"))
 app.listen(process.env.port,async()=>{
     try {
         await connection

@@ -5,7 +5,12 @@ let {Router}=require("express")
 const { SignupModel } = require("../Model/user.model")
 let userRoute=Router()
 var bcrypt = require('bcryptjs');
+const multer = require("multer");
+const bodyParser = require("body-parser");
 var jwt = require('jsonwebtoken');
+let fs=require("fs")
+const imagemodel = require("../Model/profile.image");
+const taskmiddleware = require("../Middleware/task.middle");
 userRoute.get("/",(req,res)=>{
     res.status(200).send({"msg":"Sinup and Login Basic Route"})
 })
@@ -41,7 +46,7 @@ userRoute.post("/login",async(req,res)=>{
     
         let storeddata=await SignupModel.find({email:data.email})
         if(storeddata.length>0){
-            console.log(storeddata[0].password,data.password)
+          
             bcrypt.compare(data.password,storeddata[0].password, function(err, result) {
                
                 if(result){
@@ -65,6 +70,65 @@ userRoute.post("/login",async(req,res)=>{
 
 
 })
+
+///////////////////////////////
+
+userRoute.use(bodyParser.urlencoded(
+    { extended:true }
+))
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './uploads')
+    },
+    filename: function (req, file, cb) {
+    //   cb(null, file.originalname + '-' + Date.now()+".jpg")
+    cb(null, Date.now()+ '-' +file.originalname )
+    }
+  })
+ 
+  var upload = multer({ storage: storage })
+  userRoute.post("/uploadphoto",upload.single('avatar'),taskmiddleware,async(req,res)=>{
+
+  
+    
+    try {
+        let path=req.file.path
+        let userID=req.body.userid
+        let data={
+            image:path,
+            userID:userID
+        }
+         let alreadypresent=await imagemodel.find({userID:data.userID})
+      
+         if(alreadypresent.length>0){
+           
+        
+      await imagemodel.findByIdAndUpdate({_id:alreadypresent[0]._id},{image:data.image})
+        
+         }else{
+          
+            let savingdata=new imagemodel(data)
+            await savingdata.save()
+         }
+        
+       
+      
+        let imagedata=await imagemodel.findOne({userID:userID})
+      
+        fs.unlinkSync(data.image)
+        res.status(200).send({"msg":"Uploaded",data:imagedata})
+    } catch (error) {
+        res.status(400).send({"msg":"Something went wrong"})
+    }
+   
+  //res.send("hello")
+})
+
+
+
+
+
 
 
 userRoute.get("/details",(req,res)=>{
