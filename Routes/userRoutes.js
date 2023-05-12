@@ -116,7 +116,7 @@ var storage = multer.diskStorage({
       
         let imagedata=await imagemodel.findOne({userID:userID})
       
-        fs.unlinkSync(data.image)
+        // fs.unlinkSync(data.image)
         res.status(200).send({"msg":"Uploaded",data:imagedata})
     } catch (error) {
         res.status(400).send({"msg":"Something went wrong"})
