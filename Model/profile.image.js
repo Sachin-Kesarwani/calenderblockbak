@@ -5,7 +5,10 @@ let mongoose=require("mongoose")
 
 let imageSchema=mongoose.Schema({
     userID:String,
-    image:String
+    image:{
+       data:Buffer,
+        ContentType:String
+    }
 })
 
 let imagemodel=mongoose.model("Image",imageSchema)

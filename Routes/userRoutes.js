@@ -90,17 +90,22 @@ var storage = multer.diskStorage({
   var upload = multer({ storage: storage })
   userRoute.post("/uploadphoto",upload.single('avatar'),taskmiddleware,async(req,res)=>{
 
-  
+//   let tes=fs.readFileSync(req.file.path)
+//   console.log(tes)
     
     try {
-        let path=req.file.path
+        let path=req.file.filename
         let userID=req.body.userid
         let data={
-            image:path,
-            userID:userID
+            
+            userID:userID,
+            image:{
+                data:fs.readFileSync(`./uploads/${path}`),
+                ContentType:"image/jpg"
+            }
         }
          let alreadypresent=await imagemodel.find({userID:data.userID})
-      console.log(data,alreadypresent)
+    //   console.log(data,alreadypresent)
          if(alreadypresent.length>0){
            console.log("if")
         
