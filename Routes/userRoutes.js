@@ -100,12 +100,12 @@ var storage = multer.diskStorage({
             userID:userID
         }
          let alreadypresent=await imagemodel.find({userID:data.userID})
-      
+      console.log(data,alreadypresent)
          if(alreadypresent.length>0){
-           
+           console.log("if")
         
       await imagemodel.findByIdAndUpdate({_id:alreadypresent[0]._id},{image:data.image})
-        
+        console.log("after update")
          }else{
           
             let savingdata=new imagemodel(data)
