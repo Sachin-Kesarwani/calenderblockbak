@@ -78,10 +78,7 @@ userRoute.post("/login",async(req,res)=>{
 userRoute.use(bodyParser.urlencoded(
     { extended:true }
 ))
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './uploads')
