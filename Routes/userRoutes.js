@@ -4,6 +4,8 @@
 let {Router}=require("express")
 const { SignupModel } = require("../Model/user.model")
 let userRoute=Router()
+const path = require('path');
+
 var bcrypt = require('bcryptjs');
 const multer = require("multer");
 const bodyParser = require("body-parser");
@@ -76,7 +78,10 @@ userRoute.post("/login",async(req,res)=>{
 userRoute.use(bodyParser.urlencoded(
     { extended:true }
 ))
-
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './uploads')
@@ -91,7 +96,7 @@ var storage = multer.diskStorage({
   userRoute.post("/uploadphoto",upload.single('avatar'),taskmiddleware,async(req,res)=>{
 
 //   let tes=fs.readFileSync(req.file.path)
-//   console.log(tes)
+  //console.log(req.file.buffer.toString('base64'))
     
     try {
         let path=req.file.filename
@@ -101,7 +106,8 @@ var storage = multer.diskStorage({
             userID:userID,
             image:{
                 data:fs.readFileSync(`./uploads/${path}`),
-                ContentType:"image/jpg"
+                ContentType:"image/jpg",
+                
             }
         }
          let alreadypresent=await imagemodel.find({userID:data.userID})
